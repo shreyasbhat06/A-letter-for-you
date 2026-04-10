@@ -1,249 +1,213 @@
 /* ═══════════════════════════════════════════════
-   Handwritten Letter — Enhanced Script
+   Handwritten Letter — v3 Script
    ═══════════════════════════════════════════════ */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // ─── Setup ───
   setLetterDate();
   generateRuledLines();
   generateDustParticles();
   generateLetterParticles();
 
-  // ─── Envelope → Letter Interaction ───
-  const seal       = document.getElementById('wax-seal');
-  const envelope   = document.getElementById('envelope');
+  const seal         = document.getElementById('wax-seal');
+  const envelope     = document.getElementById('envelope');
   const envelopeScene = document.getElementById('envelope-scene');
   const letterScene   = document.getElementById('letter-scene');
   const letterPaper   = document.getElementById('letter-paper');
-  const hint       = document.getElementById('envelope-hint');
-  const foldBtn    = document.getElementById('fold-btn');
+  const hint         = document.getElementById('envelope-hint');
+  const foldBtn      = document.getElementById('fold-btn');
 
-  let isOpen       = false;
-  let isAnimating  = false;
+  let isOpen      = false;
+  let isAnimating = false;
 
-  // Click seal OR envelope to open
-  if (seal) {
-    seal.addEventListener('click', openLetter);
-    envelope.addEventListener('click', openLetter);
-  }
+  // Open on seal or envelope click
+  seal.addEventListener('click', openLetter);
+  envelope.addEventListener('click', openLetter);
 
-  // Click fold button to close
-  if (foldBtn) {
-    foldBtn.addEventListener('click', closeLetter);
-  }
+  // Close on fold button
+  foldBtn.addEventListener('click', closeLetter);
 
-  // ─── Open Letter Flow ───
+
+  /* ─── OPEN FLOW ─── */
   function openLetter(e) {
     if (isOpen || isAnimating) return;
     isAnimating = true;
     e.stopPropagation();
 
-    // 1. Fade out hint text
-    if (hint) hint.classList.add('fade');
+    // Hide hint
+    hint.classList.add('fade');
 
-    // 2. Break wax seal with fragments
+    // Break seal + fragments
     seal.classList.add('breaking');
     spawnSealFragments();
 
-    // 3. Open the envelope flap (3D rotation)
+    // Open flap after seal fades
     setTimeout(() => {
       envelope.classList.add('opened');
-    }, 600);
+    }, 500);
 
-    // 4. Letter peeks out of envelope
-    // (handled by CSS: .envelope.opened .letter-peek-paper)
-
-    // 5. Dim and fade envelope scene
+    // Begin fading envelope scene
     setTimeout(() => {
       envelopeScene.classList.add('fade-out');
-    }, 2000);
+    }, 1800);
 
-    // 6. Show letter scene
+    // Switch to letter scene
     setTimeout(() => {
       envelopeScene.classList.add('hidden');
-      letterScene.classList.remove('hidden');
-      letterScene.classList.add('appearing');
 
-      // 7. Unfold the letter paper
+      letterScene.classList.remove('hidden');
+      // Force a reflow so the opacity transition fires
+      letterScene.offsetHeight;
+      letterScene.classList.add('visible');
+
+      // Unfold paper
       requestAnimationFrame(() => {
         letterPaper.classList.add('unfold');
       });
 
       isOpen = true;
       isAnimating = false;
-    }, 3200);
+    }, 3000);
   }
 
-  // ─── Close Letter Flow (fold back) ───
+
+  /* ─── CLOSE FLOW ─── */
   function closeLetter() {
     if (!isOpen || isAnimating) return;
     isAnimating = true;
 
-    // 1. Hide fold button immediately
+    // Hide fold button
     foldBtn.style.opacity = '0';
     foldBtn.style.pointerEvents = 'none';
 
-    // 2. Fold the paper
+    // Fold the paper
     letterPaper.classList.remove('unfold');
     letterPaper.classList.add('fold-back');
 
-    // 3. After paper folds, switch back to envelope scene
+    // Fade out letter scene
+    setTimeout(() => {
+      letterScene.classList.remove('visible');
+    }, 400);
+
+    // Switch back to envelope
     setTimeout(() => {
       letterScene.classList.add('hidden');
-      letterScene.classList.remove('appearing');
 
-      // Reset letter paper for next open
+      // Reset letter
       letterPaper.classList.remove('fold-back');
-
-      // Reset all ink-appear animations
       resetLetterAnimations();
 
-      // Prepare envelope scene
-      envelopeScene.classList.remove('hidden');
-      envelopeScene.classList.remove('fade-out');
-
-      // Reset envelope
-      envelope.classList.remove('opened');
-      seal.classList.remove('breaking');
-      seal.style.display = '';
-
-      // Reset hint
-      if (hint) hint.classList.remove('fade');
-
-      // Reset fold button for next time
+      // Reset fold button
       foldBtn.style.opacity = '';
       foldBtn.style.pointerEvents = '';
       foldBtn.style.animation = 'none';
+      foldBtn.offsetHeight;
+      foldBtn.style.animation = '';
+
+      // Restore envelope
+      envelopeScene.classList.remove('hidden');
+      envelopeScene.classList.remove('fade-out');
+      envelope.classList.remove('opened');
+      seal.classList.remove('breaking');
+
+      hint.classList.remove('fade');
 
       isOpen = false;
       isAnimating = false;
-    }, 1000);
+    }, 1200);
   }
 });
 
 
-// ═══════════════════════════════════════════════
-// HELPER FUNCTIONS
-// ═══════════════════════════════════════════════
+/* ═══════════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════════ */
 
 function setLetterDate() {
-  const dateEl = document.getElementById('letter-date');
-  if (!dateEl) return;
-  const now = new Date();
-  dateEl.textContent = now.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  const el = document.getElementById('letter-date');
+  if (!el) return;
+  el.textContent = new Date().toLocaleDateString('en-US', {
+    year: 'numeric', month: 'long', day: 'numeric'
   });
 }
 
 function generateRuledLines() {
-  const container = document.getElementById('ruled-lines');
-  if (!container) return;
-  const spacing = 38;
-  const count   = 22;
-  for (let i = 0; i < count; i++) {
-    const line = document.createElement('div');
-    line.className = 'rule-line';
-    line.style.top = `${i * spacing}px`;
-    container.appendChild(line);
+  const c = document.getElementById('ruled-lines');
+  if (!c) return;
+  for (let i = 0; i < 22; i++) {
+    const l = document.createElement('div');
+    l.className = 'rule-line';
+    l.style.top = `${i * 38}px`;
+    c.appendChild(l);
   }
 }
 
-// ─── Dust particles (envelope scene) ───
 function generateDustParticles() {
-  const container = document.getElementById('dust-particles');
-  if (!container) return;
-
+  const c = document.getElementById('dust-particles');
+  if (!c) return;
   for (let i = 0; i < 15; i++) {
     const p = document.createElement('span');
     p.className = 'particle';
-    p.style.top  = `${Math.random() * 100}%`;
-    p.style.left = `${Math.random() * 100}%`;
-    p.style.setProperty('--dur',   `${6 + Math.random() * 6}s`);
-    p.style.setProperty('--delay', `${Math.random() * 5}s`);
-    p.style.setProperty('--dx',    `${-30 + Math.random() * 60}px`);
-    p.style.setProperty('--dy',    `${-50 + Math.random() * 30}px`);
+    p.style.top    = `${Math.random() * 100}%`;
+    p.style.left   = `${Math.random() * 100}%`;
     p.style.width  = `${2 + Math.random() * 2}px`;
     p.style.height = p.style.width;
-    container.appendChild(p);
+    p.style.setProperty('--dur',   `${7 + Math.random() * 6}s`);
+    p.style.setProperty('--delay', `${Math.random() * 5}s`);
+    p.style.setProperty('--dx',    `${-25 + Math.random() * 50}px`);
+    p.style.setProperty('--dy',    `${-40 + Math.random() * 20}px`);
+    c.appendChild(p);
   }
 }
 
-// ─── Soft particles (letter scene) ───
 function generateLetterParticles() {
-  const container = document.getElementById('letter-particles');
-  if (!container) return;
-
+  const c = document.getElementById('letter-particles');
+  if (!c) return;
   for (let i = 0; i < 10; i++) {
     const p = document.createElement('span');
     p.className = 'lp';
     p.style.left = `${Math.random() * 100}%`;
     p.style.top  = `${20 + Math.random() * 70}%`;
-    p.style.setProperty('--dur',   `${8 + Math.random() * 6}s`);
+    p.style.setProperty('--dur',   `${9 + Math.random() * 6}s`);
     p.style.setProperty('--delay', `${Math.random() * 6}s`);
-    container.appendChild(p);
+    c.appendChild(p);
   }
 }
 
-// ─── Wax seal fragment burst ───
 function spawnSealFragments() {
-  const container = document.getElementById('seal-fragments');
-  if (!container) return;
-  container.innerHTML = '';
+  const c = document.getElementById('seal-fragments');
+  if (!c) return;
+  c.innerHTML = '';
 
-  const count = 8;
-  for (let i = 0; i < count; i++) {
-    const frag = document.createElement('div');
-    frag.className = 'seal-fragment';
+  for (let i = 0; i < 8; i++) {
+    const f = document.createElement('div');
+    f.className = 'seal-fragment';
 
-    const angle = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
-    const dist  = 40 + Math.random() * 50;
-    const fx    = Math.cos(angle) * dist;
-    const fy    = Math.sin(angle) * dist;
-    const fr    = Math.random() * 360;
+    const angle = (i / 8) * Math.PI * 2 + (Math.random() - 0.5) * 0.6;
+    const dist  = 35 + Math.random() * 45;
 
-    frag.style.setProperty('--fx', `${fx}px`);
-    frag.style.setProperty('--fy', `${fy}px`);
-    frag.style.setProperty('--fr', `${fr}deg`);
-    frag.style.width  = `${5 + Math.random() * 8}px`;
-    frag.style.height = `${5 + Math.random() * 8}px`;
-    frag.style.background = Math.random() > 0.5
-      ? 'var(--wax-red)'
-      : 'var(--wax-highlight)';
+    f.style.setProperty('--fx', `${Math.cos(angle) * dist}px`);
+    f.style.setProperty('--fy', `${Math.sin(angle) * dist}px`);
+    f.style.setProperty('--fr', `${Math.random() * 360}deg`);
+    f.style.width  = `${5 + Math.random() * 7}px`;
+    f.style.height = `${5 + Math.random() * 7}px`;
+    f.style.background = Math.random() > 0.5 ? 'var(--wax-red)' : 'var(--wax-highlight)';
 
-    container.appendChild(frag);
-
-    // Trigger animation
-    requestAnimationFrame(() => {
-      frag.classList.add('animate');
-    });
+    c.appendChild(f);
+    requestAnimationFrame(() => f.classList.add('animate'));
   }
 }
 
-// ─── Reset letter content animations for re-open ───
 function resetLetterAnimations() {
-  const letterContent = document.getElementById('letter-content');
-  if (!letterContent) return;
+  const content = document.getElementById('letter-content');
+  if (!content) return;
 
-  // Get all animated elements
-  const animated = letterContent.querySelectorAll(
+  const els = content.querySelectorAll(
     '.letter-date, .letter-greeting, .letter-body p, .letter-closing, .letter-signature, .ornament-divider, .pressed-flower'
   );
 
-  animated.forEach(el => {
-    // Remove animation, reset opacity
-    const currentAnim = el.style.animation;
+  els.forEach(el => {
     el.style.animation = 'none';
-    el.offsetHeight; // Force reflow
+    el.offsetHeight; // reflow
     el.style.animation = '';
   });
-
-  // Reset fold button animation
-  const foldBtn = document.getElementById('fold-btn');
-  if (foldBtn) {
-    requestAnimationFrame(() => {
-      foldBtn.style.animation = '';
-    });
-  }
 }
