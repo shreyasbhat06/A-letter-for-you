@@ -2,9 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="description" content="A heartfelt handwritten letter — delivered the old-fashioned way.">
   <title>A Letter For You</title>
+
+  <!-- Open Graph for link previews (iMessage, WhatsApp, etc.) -->
+  <meta property="og:title" content="You have a letter waiting…">
+  <meta property="og:description" content="Someone wrote you a heartfelt letter. Open the envelope to read it.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://shreyasbhat06.github.io/A-letter-for-you/">
+
+  <!-- Apple iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="A Letter For You">
+  <meta name="theme-color" content="#2a1f14">
+
+  <!-- Favicon: wax seal -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%238b1a1a'/><circle cx='50' cy='50' r='35' fill='%23c0392b' opacity='0.6'/><text x='50' y='62' text-anchor='middle' font-size='30' fill='%23ffd7c8' opacity='0.7'>✦</text></svg>">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Dancing+Script:wght@400;500;600;700&family=IM+Fell+English+SC&family=Marck+Script&display=swap" rel="stylesheet">
@@ -12,34 +28,73 @@
 </head>
 <body>
 
-  <!-- Envelope Scene -->
+  <!-- ─── Envelope Scene ─── -->
   <div id="envelope-scene" class="envelope-scene">
-    <div class="dust-particles">
-      <span></span><span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span><span></span>
-    </div>
+    <div class="dust-particles" id="dust-particles"></div>
+
     <div class="envelope-wrapper">
       <div class="envelope" id="envelope">
-        <div class="envelope-flap"></div>
+        <!-- Envelope flap with perspective fold -->
+        <div class="envelope-flap" id="envelope-flap"></div>
+
+        <!-- Envelope body -->
         <div class="envelope-body">
+          <div class="envelope-lining"></div>
           <div class="envelope-label">
             <span class="label-to">To You</span>
             <span class="label-from">With Love</span>
           </div>
         </div>
+
+        <!-- Letter peeking out (slides up on open) -->
+        <div class="letter-peek" id="letter-peek">
+          <div class="letter-peek-paper"></div>
+        </div>
+
+        <!-- Postage stamp -->
+        <div class="postage-stamp">
+          <div class="stamp-inner">
+            <div class="stamp-design">
+              <div class="stamp-flower">✿</div>
+              <div class="stamp-value">Forever</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Postmark -->
+        <div class="postmark">
+          <div class="postmark-circle">
+            <span class="postmark-text-top">WITH LOVE</span>
+            <span class="postmark-date">❦</span>
+            <span class="postmark-text-bottom">ALWAYS</span>
+          </div>
+        </div>
+
+        <!-- Wax seal -->
         <div class="wax-seal" id="wax-seal">
           <div class="seal-inner">✦</div>
         </div>
+
+        <!-- Wax seal crack fragments (hidden initially) -->
+        <div class="seal-fragments" id="seal-fragments"></div>
       </div>
-      <p class="envelope-hint">Click the seal to open</p>
+
+      <p class="envelope-hint" id="envelope-hint">Click the seal to open</p>
     </div>
   </div>
 
-  <!-- Letter Scene -->
+  <!-- ─── Letter Scene ─── -->
   <div id="letter-scene" class="letter-scene hidden">
+    <!-- Ambient effects -->
     <div class="ambience">
-      <div class="candle-glow"></div>
+      <div class="candle-glow glow-1"></div>
+      <div class="candle-glow glow-2"></div>
+      <div class="vignette"></div>
     </div>
+
+    <!-- Soft floating particles in letter scene -->
+    <div class="letter-particles" id="letter-particles"></div>
+
     <div class="desk-surface">
       <div class="paper-shadow"></div>
       <div class="letter-paper" id="letter-paper">
@@ -47,20 +102,38 @@
         <div class="paper-edge-top"></div>
         <div class="paper-edge-left"></div>
 
+        <!-- Fold crease -->
+        <div class="fold-crease"></div>
+
         <!-- Decorative corner flourishes -->
         <div class="flourish top-left">❦</div>
         <div class="flourish top-right">❦</div>
         <div class="flourish bottom-left">❦</div>
         <div class="flourish bottom-right">❦</div>
 
-        <!-- Red ruled lines (faint) -->
+        <!-- Ruled lines -->
         <div class="ruled-lines" id="ruled-lines"></div>
 
-        <!-- Letter Content — placeholder text, replace with your words -->
+        <!-- Ornamental top border -->
+        <div class="ornament-border top-border">
+          <svg viewBox="0 0 400 20" preserveAspectRatio="none">
+            <path d="M0,10 C30,2 60,18 100,10 C140,2 160,18 200,10 C240,2 260,18 300,10 C340,2 370,18 400,10" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.3"/>
+          </svg>
+        </div>
+
+        <!-- Letter Content -->
         <div class="letter-content" id="letter-content">
           <p class="letter-date" id="letter-date"></p>
 
           <p class="letter-greeting">My Dearest,</p>
+
+          <!-- Ornamental divider after greeting -->
+          <div class="ornament-divider">
+            <svg viewBox="0 0 200 12" preserveAspectRatio="xMidYMid meet">
+              <path d="M0,6 C20,2 40,10 60,6 C80,2 100,10 120,6 C140,2 160,10 180,6 L200,6" fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.25"/>
+              <circle cx="100" cy="6" r="2" fill="currentColor" opacity="0.2"/>
+            </svg>
+          </div>
 
           <div class="letter-body" id="letter-body">
             <p>These words have waited a long time to find their way to you. I sat by the window this evening, the amber light falling across the old wooden desk, and I thought of you — as I always do when the world grows quiet.</p>
@@ -72,17 +145,40 @@
 
           <p class="letter-closing">Forever yours,</p>
           <p class="letter-signature">♥</p>
+
+          <!-- Pressed flower decoration -->
+          <div class="pressed-flower" aria-hidden="true">
+            <div class="flower-stem"></div>
+            <div class="flower-head">
+              <div class="petal p1"></div>
+              <div class="petal p2"></div>
+              <div class="petal p3"></div>
+              <div class="petal p4"></div>
+              <div class="petal p5"></div>
+              <div class="flower-center"></div>
+            </div>
+            <div class="flower-leaf leaf-1"></div>
+            <div class="flower-leaf leaf-2"></div>
+          </div>
         </div>
 
-        <!-- Ink blot decorations -->
+        <!-- Ink blots -->
         <div class="ink-blot blot-1"></div>
         <div class="ink-blot blot-2"></div>
+        <div class="ink-blot blot-3"></div>
 
         <!-- Coffee ring stain -->
         <div class="coffee-stain"></div>
+
+        <!-- Ornamental bottom border -->
+        <div class="ornament-border bottom-border">
+          <svg viewBox="0 0 400 20" preserveAspectRatio="none">
+            <path d="M0,10 C30,2 60,18 100,10 C140,2 160,18 200,10 C240,2 260,18 300,10 C340,2 370,18 400,10" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.3"/>
+          </svg>
+        </div>
       </div>
 
-      <!-- Desk accessories -->
+      <!-- Desk accessories (desktop only) -->
       <div class="ink-well">
         <div class="ink-well-body"></div>
         <div class="quill">
@@ -91,6 +187,16 @@
         </div>
       </div>
     </div>
+
+    <!-- Fold / close letter button -->
+    <button class="fold-btn" id="fold-btn" title="Fold the letter and return to the envelope">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 8l9 6 9-6"/>
+        <path d="M21 8v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8"/>
+        <path d="M3 8l9-5 9 5"/>
+      </svg>
+      <span class="fold-btn-label">Fold letter</span>
+    </button>
   </div>
 
   <script src="script.js"></script>
