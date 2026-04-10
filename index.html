@@ -6,20 +6,17 @@
   <meta name="description" content="A heartfelt handwritten letter — delivered the old-fashioned way.">
   <title>A Letter For You</title>
 
-  <!-- Open Graph for link previews -->
   <meta property="og:title" content="You have a letter waiting…">
   <meta property="og:description" content="Someone wrote you a heartfelt letter. Open the envelope to read it.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://shreyasbhat06.github.io/A-letter-for-you/">
 
-  <!-- Apple iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="A Letter For You">
   <meta name="theme-color" content="#2a1f14">
 
-  <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%238b1a1a'/><circle cx='50' cy='50' r='35' fill='%23c0392b' opacity='0.6'/><text x='50' y='62' text-anchor='middle' font-size='30' fill='%23ffd7c8' opacity='0.7'>✦</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%238b1a1a'/><text x='50' y='62' text-anchor='middle' font-size='30' fill='%23ffd7c8' opacity='0.7'>✦</text></svg>">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,103 +24,96 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Everything is ONE continuous scene -->
+  <div class="scene" id="scene">
 
-  <!-- ─── Envelope Scene ─── -->
-  <div id="envelope-scene" class="envelope-scene">
-    <!-- Ambient background decorations -->
-    <div class="bg-ambience">
-      <div class="bg-glow g1"></div>
-      <div class="bg-glow g2"></div>
-      <div class="bg-glow g3"></div>
-      <div class="bg-star s1">✦</div>
-      <div class="bg-star s2">✦</div>
-      <div class="bg-star s3">✧</div>
-      <div class="bg-star s4">✧</div>
-      <div class="bg-star s5">·</div>
-      <div class="bg-star s6">·</div>
-      <div class="bg-vignette"></div>
+    <!-- Wooden desk background -->
+    <div class="desk-bg">
+      <div class="wood-grain"></div>
+      <div class="desk-vignette"></div>
+      <div class="desk-warm-light"></div>
     </div>
 
-    <div class="dust-particles" id="dust-particles"></div>
+    <!-- Scattered background papers for depth -->
+    <div class="bg-papers">
+      <div class="bg-paper p1">
+        <div class="bg-paper-lines"></div>
+      </div>
+      <div class="bg-paper p2">
+        <div class="bg-paper-lines"></div>
+      </div>
+      <div class="bg-paper p3"></div>
+      <div class="bg-paper p4">
+        <div class="bg-paper-lines"></div>
+      </div>
+      <div class="bg-paper p5"></div>
+    </div>
 
-    <div class="envelope-wrapper">
+    <!-- Floating dust / light particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Warm ambient glow -->
+    <div class="ambient">
+      <div class="glow g1"></div>
+      <div class="glow g2"></div>
+    </div>
+
+    <!-- ─── ENVELOPE ─── -->
+    <div class="envelope-container" id="envelope-container">
       <div class="envelope" id="envelope">
-        <div class="envelope-flap" id="envelope-flap"></div>
-        <div class="envelope-body">
+        <div class="envelope-back"></div>
+        <div class="envelope-front">
           <div class="envelope-label">
             <span class="label-to">To You</span>
             <span class="label-divider">~</span>
             <span class="label-from">With Love</span>
           </div>
         </div>
+        <div class="envelope-flap" id="envelope-flap"></div>
 
         <!-- Wax seal -->
         <div class="wax-seal" id="wax-seal">
           <div class="seal-inner">✦</div>
         </div>
-
-        <!-- Wax fragments container -->
         <div class="seal-fragments" id="seal-fragments"></div>
       </div>
 
       <p class="envelope-hint" id="envelope-hint">Click the seal to open</p>
     </div>
-  </div>
 
-  <!-- ─── Letter Scene ─── -->
-  <div id="letter-scene" class="letter-scene hidden">
-    <div class="ambience">
-      <div class="candle-glow glow-1"></div>
-      <div class="candle-glow glow-2"></div>
-      <div class="vignette"></div>
-    </div>
-
-    <div class="letter-particles" id="letter-particles"></div>
-
-    <div class="desk-surface">
-      <div class="paper-shadow"></div>
+    <!-- ─── LETTER (starts hidden inside envelope, rises out) ─── -->
+    <div class="letter-wrapper" id="letter-wrapper">
       <div class="letter-paper" id="letter-paper">
         <div class="paper-texture"></div>
-        <div class="paper-edge-top"></div>
-        <div class="paper-edge-left"></div>
-
-        <!-- Fold crease -->
+        <div class="paper-aging"></div>
         <div class="fold-crease"></div>
 
-        <!-- Corner flourishes -->
-        <div class="flourish top-left">❦</div>
-        <div class="flourish top-right">❦</div>
-        <div class="flourish bottom-left">❦</div>
-        <div class="flourish bottom-right">❦</div>
+        <!-- Flourishes -->
+        <div class="flourish tl">❦</div>
+        <div class="flourish tr">❦</div>
+        <div class="flourish bl">❦</div>
+        <div class="flourish br">❦</div>
 
         <!-- Ruled lines -->
         <div class="ruled-lines" id="ruled-lines"></div>
 
-        <!-- Ornamental top border -->
-        <div class="ornament-border top-border">
-          <svg viewBox="0 0 400 20" preserveAspectRatio="none">
-            <path d="M0,10 C30,2 60,18 100,10 C140,2 160,18 200,10 C240,2 260,18 300,10 C340,2 370,18 400,10" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.3"/>
-          </svg>
+        <!-- Wave border top -->
+        <div class="wave-border top">
+          <svg viewBox="0 0 400 16" preserveAspectRatio="none"><path d="M0,8 C40,2 80,14 120,8 C160,2 200,14 240,8 C280,2 320,14 360,8 L400,8" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.25"/></svg>
         </div>
 
-        <!-- Letter Content -->
+        <!-- Content -->
         <div class="letter-content" id="letter-content">
           <p class="letter-date" id="letter-date"></p>
-
           <p class="letter-greeting">My Dearest,</p>
 
-          <div class="ornament-divider">
-            <svg viewBox="0 0 200 12" preserveAspectRatio="xMidYMid meet">
-              <path d="M0,6 C20,2 40,10 60,6 C80,2 100,10 120,6 C140,2 160,10 180,6 L200,6" fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.25"/>
-              <circle cx="100" cy="6" r="2" fill="currentColor" opacity="0.2"/>
-            </svg>
+          <div class="divider">
+            <svg viewBox="0 0 200 10" preserveAspectRatio="xMidYMid meet"><path d="M0,5 Q50,0 100,5 T200,5" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.2"/><circle cx="100" cy="5" r="1.5" fill="currentColor" opacity="0.15"/></svg>
           </div>
 
           <div class="letter-body" id="letter-body">
             <p>These words have waited a long time to find their way to you. I sat by the window this evening, the amber light falling across the old wooden desk, and I thought of you — as I always do when the world grows quiet.</p>
-
             <p>There are things too tender for speaking aloud, so I have pressed them gently into ink and paper, hoping they reach you the way a song carries across still water.</p>
-
             <p>Please know that wherever you are, whatever season you find yourself in, you are thought of — deeply, warmly, and always.</p>
           </div>
 
@@ -131,54 +121,38 @@
           <p class="letter-signature">♥</p>
 
           <!-- Pressed flower -->
-          <div class="pressed-flower" aria-hidden="true">
+          <div class="pressed-flower">
             <div class="flower-stem"></div>
-            <div class="flower-head">
-              <div class="petal p1"></div>
-              <div class="petal p2"></div>
-              <div class="petal p3"></div>
-              <div class="petal p4"></div>
-              <div class="petal p5"></div>
-              <div class="flower-center"></div>
+            <div class="petal-ring">
+              <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
             </div>
-            <div class="flower-leaf leaf-1"></div>
-            <div class="flower-leaf leaf-2"></div>
+            <div class="flower-center"></div>
+            <div class="leaf l1"></div>
+            <div class="leaf l2"></div>
           </div>
         </div>
 
         <!-- Ink blots -->
-        <div class="ink-blot blot-1"></div>
-        <div class="ink-blot blot-2"></div>
+        <div class="ink-blot b1"></div>
+        <div class="ink-blot b2"></div>
 
-        <!-- Coffee ring -->
-        <div class="coffee-stain"></div>
+        <!-- Coffee stain -->
+        <div class="coffee-ring"></div>
 
-        <!-- Ornamental bottom border -->
-        <div class="ornament-border bottom-border">
-          <svg viewBox="0 0 400 20" preserveAspectRatio="none">
-            <path d="M0,10 C30,2 60,18 100,10 C140,2 160,18 200,10 C240,2 260,18 300,10 C340,2 370,18 400,10" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.3"/>
-          </svg>
+        <!-- Wave border bottom -->
+        <div class="wave-border bot">
+          <svg viewBox="0 0 400 16" preserveAspectRatio="none"><path d="M0,8 C40,2 80,14 120,8 C160,2 200,14 240,8 C280,2 320,14 360,8 L400,8" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.25"/></svg>
         </div>
 
-        <!-- Fold button — attached to the paper -->
+        <!-- Fold button -->
         <button class="fold-btn" id="fold-btn" title="Fold the letter">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 8l9 6 9-6"/>
-            <path d="M21 8v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8"/>
-            <path d="M3 8l9-5 9 5"/>
+            <path d="M3 8l9 6 9-6"/><path d="M21 8v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8"/><path d="M3 8l9-5 9 5"/>
           </svg>
         </button>
       </div>
-
-      <!-- Quill (desktop) -->
-      <div class="ink-well">
-        <div class="ink-well-body"></div>
-        <div class="quill">
-          <div class="quill-feather"></div>
-          <div class="quill-shaft"></div>
-        </div>
-      </div>
     </div>
+
   </div>
 
   <script src="script.js"></script>

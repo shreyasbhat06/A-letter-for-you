@@ -1,119 +1,136 @@
 /* ═══════════════════════════════════════════════
-   Handwritten Letter — v3 Script
+   A Letter For You — v4 Script
+   Smooth single-scene transitions, no flashing
    ═══════════════════════════════════════════════ */
 
 document.addEventListener('DOMContentLoaded', () => {
   setLetterDate();
   generateRuledLines();
-  generateDustParticles();
-  generateLetterParticles();
+  generateParticles();
 
-  const seal         = document.getElementById('wax-seal');
-  const envelope     = document.getElementById('envelope');
-  const envelopeScene = document.getElementById('envelope-scene');
-  const letterScene   = document.getElementById('letter-scene');
-  const letterPaper   = document.getElementById('letter-paper');
-  const hint         = document.getElementById('envelope-hint');
-  const foldBtn      = document.getElementById('fold-btn');
+  const scene     = document.getElementById('scene');
+  const envCont   = document.getElementById('envelope-container');
+  const envelope  = document.getElementById('envelope');
+  const seal      = document.getElementById('wax-seal');
+  const hint      = document.getElementById('envelope-hint');
+  const wrapper   = document.getElementById('letter-wrapper');
+  const paper     = document.getElementById('letter-paper');
+  const foldBtn   = document.getElementById('fold-btn');
 
-  let isOpen      = false;
-  let isAnimating = false;
+  let state = 'closed'; // closed | animating | open
 
-  // Open on seal or envelope click
-  seal.addEventListener('click', openLetter);
-  envelope.addEventListener('click', openLetter);
-
-  // Close on fold button
-  foldBtn.addEventListener('click', closeLetter);
+  seal.addEventListener('click', handleOpen);
+  envelope.addEventListener('click', handleOpen);
+  foldBtn.addEventListener('click', handleClose);
 
 
-  /* ─── OPEN FLOW ─── */
-  function openLetter(e) {
-    if (isOpen || isAnimating) return;
-    isAnimating = true;
+  /* ─── OPEN: seamless flow ─── */
+  function handleOpen(e) {
+    if (state !== 'closed') return;
+    state = 'animating';
     e.stopPropagation();
 
-    // Hide hint
-    hint.classList.add('fade');
+    // Step 1: Hide hint
+    hint.classList.add('hide');
 
-    // Break seal + fragments
-    seal.classList.add('breaking');
-    spawnSealFragments();
+    // Step 2: Break seal (0ms)
+    seal.classList.add('cracking');
+    spawnFragments();
 
-    // Open flap after seal fades
+    // Step 3: Open flap (after seal cracks, ~500ms)
     setTimeout(() => {
-      envelope.classList.add('opened');
+      envelope.classList.add('flap-open');
     }, 500);
 
-    // Begin fading envelope scene
+    // Step 4: Start letter rising from envelope position (1.5s)
     setTimeout(() => {
-      envelopeScene.classList.add('fade-out');
+      wrapper.classList.remove('folding');
+      wrapper.classList.add('rising');
+    }, 1500);
+
+    // Step 5: Envelope slides down and fades (1.8s)
+    setTimeout(() => {
+      envCont.classList.add('opened');
     }, 1800);
 
-    // Switch to letter scene
+    // Step 6: Text reveals start (staggered, smooth)
+    // Wait for letter to finish rising (~2.5s for the transition)
     setTimeout(() => {
-      envelopeScene.classList.add('hidden');
-
-      letterScene.classList.remove('hidden');
-      // Force a reflow so the opacity transition fires
-      letterScene.offsetHeight;
-      letterScene.classList.add('visible');
-
-      // Unfold paper
-      requestAnimationFrame(() => {
-        letterPaper.classList.add('unfold');
-      });
-
-      isOpen = true;
-      isAnimating = false;
-    }, 3000);
+      revealText();
+      state = 'open';
+    }, 3200);
   }
 
 
-  /* ─── CLOSE FLOW ─── */
-  function closeLetter() {
-    if (!isOpen || isAnimating) return;
-    isAnimating = true;
+  /* ─── CLOSE: seamless reverse ─── */
+  function handleClose() {
+    if (state !== 'open') return;
+    state = 'animating';
 
-    // Hide fold button
-    foldBtn.style.opacity = '0';
-    foldBtn.style.pointerEvents = 'none';
+    // Step 1: Hide fold button
+    foldBtn.classList.remove('show');
 
-    // Fold the paper
-    letterPaper.classList.remove('unfold');
-    letterPaper.classList.add('fold-back');
+    // Step 2: Hide all text
+    hideText();
 
-    // Fade out letter scene
+    // Step 3: Letter folds back (after text fades, ~600ms)
     setTimeout(() => {
-      letterScene.classList.remove('visible');
-    }, 400);
+      wrapper.classList.remove('rising');
+      wrapper.classList.add('folding');
+    }, 600);
 
-    // Switch back to envelope
+    // Step 4: Envelope returns (after letter folds, ~1s)
     setTimeout(() => {
-      letterScene.classList.add('hidden');
-
-      // Reset letter
-      letterPaper.classList.remove('fold-back');
-      resetLetterAnimations();
-
-      // Reset fold button
-      foldBtn.style.opacity = '';
-      foldBtn.style.pointerEvents = '';
-      foldBtn.style.animation = 'none';
-      foldBtn.offsetHeight;
-      foldBtn.style.animation = '';
-
-      // Restore envelope
-      envelopeScene.classList.remove('hidden');
-      envelopeScene.classList.remove('fade-out');
-      envelope.classList.remove('opened');
-      seal.classList.remove('breaking');
-
-      hint.classList.remove('fade');
-
-      isOpen = false;
-      isAnimating = false;
+      envCont.classList.remove('opened');
     }, 1200);
+
+    // Step 5: Reset everything (after full animation, ~2.5s)
+    setTimeout(() => {
+      // Reset envelope
+      envelope.classList.remove('flap-open');
+      seal.classList.remove('cracking');
+
+      // Reset hint
+      hint.classList.remove('hide');
+
+      // Reset wrapper
+      wrapper.classList.remove('folding');
+
+      state = 'closed';
+    }, 2800);
+  }
+
+
+  /* ─── Reveal text elements with staggered delays ─── */
+  function revealText() {
+    const els = document.querySelectorAll(
+      '.letter-date, .letter-greeting, .divider, .letter-body p, .letter-closing, .letter-signature, .pressed-flower'
+    );
+
+    let delay = 0;
+    els.forEach((el, i) => {
+      setTimeout(() => {
+        el.classList.add('reveal');
+      }, delay);
+
+      // Stagger: faster for date/greeting, slower for paragraphs
+      if (i < 2) delay += 300;
+      else delay += 450;
+    });
+
+    // Show fold button after all text has appeared
+    setTimeout(() => {
+      foldBtn.classList.add('show');
+    }, delay + 200);
+  }
+
+
+  /* ─── Hide all text elements ─── */
+  function hideText() {
+    const els = document.querySelectorAll(
+      '.letter-date, .letter-greeting, .divider, .letter-body p, .letter-closing, .letter-signature, .pressed-flower'
+    );
+    els.forEach(el => el.classList.remove('reveal'));
   }
 });
 
@@ -135,79 +152,54 @@ function generateRuledLines() {
   if (!c) return;
   for (let i = 0; i < 22; i++) {
     const l = document.createElement('div');
-    l.className = 'rule-line';
-    l.style.top = `${i * 38}px`;
+    l.className = 'rl';
+    l.style.top = `${i * 36}px`;
     c.appendChild(l);
   }
 }
 
-function generateDustParticles() {
-  const c = document.getElementById('dust-particles');
+function generateParticles() {
+  const c = document.getElementById('particles');
   if (!c) return;
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 18; i++) {
     const p = document.createElement('span');
     p.className = 'particle';
     p.style.top    = `${Math.random() * 100}%`;
     p.style.left   = `${Math.random() * 100}%`;
-    p.style.width  = `${2 + Math.random() * 2}px`;
+    p.style.width  = `${1.5 + Math.random() * 2.5}px`;
     p.style.height = p.style.width;
-    p.style.setProperty('--dur',   `${7 + Math.random() * 6}s`);
-    p.style.setProperty('--delay', `${Math.random() * 5}s`);
-    p.style.setProperty('--dx',    `${-25 + Math.random() * 50}px`);
-    p.style.setProperty('--dy',    `${-40 + Math.random() * 20}px`);
-    c.appendChild(p);
-  }
-}
-
-function generateLetterParticles() {
-  const c = document.getElementById('letter-particles');
-  if (!c) return;
-  for (let i = 0; i < 10; i++) {
-    const p = document.createElement('span');
-    p.className = 'lp';
-    p.style.left = `${Math.random() * 100}%`;
-    p.style.top  = `${20 + Math.random() * 70}%`;
-    p.style.setProperty('--dur',   `${9 + Math.random() * 6}s`);
+    p.style.background = Math.random() > 0.3
+      ? `rgba(245, 196, 108, ${0.2 + Math.random() * 0.3})`
+      : `rgba(255, 255, 255, ${0.1 + Math.random() * 0.15})`;
+    p.style.setProperty('--dur',   `${7 + Math.random() * 8}s`);
     p.style.setProperty('--delay', `${Math.random() * 6}s`);
+    p.style.setProperty('--dx',    `${-20 + Math.random() * 40}px`);
+    p.style.setProperty('--dy',    `${-35 + Math.random() * 15}px`);
+    p.style.setProperty('--peak',  `${0.3 + Math.random() * 0.4}`);
     c.appendChild(p);
   }
 }
 
-function spawnSealFragments() {
+function spawnFragments() {
   const c = document.getElementById('seal-fragments');
   if (!c) return;
   c.innerHTML = '';
 
   for (let i = 0; i < 8; i++) {
     const f = document.createElement('div');
-    f.className = 'seal-fragment';
+    f.className = 'frag';
 
-    const angle = (i / 8) * Math.PI * 2 + (Math.random() - 0.5) * 0.6;
-    const dist  = 35 + Math.random() * 45;
+    const a = (i / 8) * Math.PI * 2 + (Math.random() - 0.5) * 0.6;
+    const d = 30 + Math.random() * 40;
 
-    f.style.setProperty('--fx', `${Math.cos(angle) * dist}px`);
-    f.style.setProperty('--fy', `${Math.sin(angle) * dist}px`);
+    f.style.setProperty('--fx', `${Math.cos(a) * d}px`);
+    f.style.setProperty('--fy', `${Math.sin(a) * d}px`);
     f.style.setProperty('--fr', `${Math.random() * 360}deg`);
-    f.style.width  = `${5 + Math.random() * 7}px`;
-    f.style.height = `${5 + Math.random() * 7}px`;
-    f.style.background = Math.random() > 0.5 ? 'var(--wax-red)' : 'var(--wax-highlight)';
+    f.style.width  = `${4 + Math.random() * 6}px`;
+    f.style.height = `${4 + Math.random() * 6}px`;
+    f.style.background = Math.random() > 0.5 ? 'var(--wax-red)' : 'var(--wax-hi)';
 
     c.appendChild(f);
-    requestAnimationFrame(() => f.classList.add('animate'));
+    requestAnimationFrame(() => f.classList.add('go'));
   }
-}
-
-function resetLetterAnimations() {
-  const content = document.getElementById('letter-content');
-  if (!content) return;
-
-  const els = content.querySelectorAll(
-    '.letter-date, .letter-greeting, .letter-body p, .letter-closing, .letter-signature, .ornament-divider, .pressed-flower'
-  );
-
-  els.forEach(el => {
-    el.style.animation = 'none';
-    el.offsetHeight; // reflow
-    el.style.animation = '';
-  });
 }
