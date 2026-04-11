@@ -1,7 +1,37 @@
 /* ═══════════════════════════════════════════════
-   A Letter For You — v5 Script
-   Smoother timing to eliminate flash
+   A Letter For You — v5 Script + Music
+   YouTube background music on seal click
    ═══════════════════════════════════════════════ */
+
+/* ─── CHANGE SONG HERE ─── */
+const YOUTUBE_VIDEO_ID = 'ojAwm4jtcYw';
+const MUSIC_VOLUME = 30; // 0-100, keep low for subtle background
+
+let ytPlayer = null;
+let ytReady = false;
+let isMuted = false;
+
+/* Called automatically by YouTube IFrame API */
+function onYouTubeIframeAPIReady() {
+  ytPlayer = new YT.Player('yt-player', {
+    height: '1',
+    width: '1',
+    videoId: YOUTUBE_VIDEO_ID,
+    playerVars: {
+      autoplay: 0,
+      controls: 0,
+      loop: 1,
+      playlist: YOUTUBE_VIDEO_ID, // required for loop
+      modestbranding: 1,
+      rel: 0,
+      showinfo: 0,
+      iv_load_policy: 3,
+    },
+    events: {
+      onReady: () => { ytReady = true; },
+    }
+  });
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   setLetterDate();
@@ -31,9 +61,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Fade hint (immediately)
     hint.classList.add('hide');
 
-    // 2. Crack seal + fragments (0ms)
+    // 2. Crack seal + fragments + START MUSIC
     seal.classList.add('cracking');
     spawnFragments();
+    startMusic();
 
     // 3. Open flap (after seal starts cracking)
     setTimeout(() => {
@@ -117,12 +148,64 @@ document.addEventListener('DOMContentLoaded', () => {
       '.letter-date, .letter-greeting, .divider, .letter-body p, .letter-closing, .letter-signature, .pressed-flower-letter'
     ).forEach(el => el.classList.remove('reveal'));
   }
+
+
+  /* ─── Music controls ─── */
+  const musicBtn   = document.getElementById('music-toggle');
+  const iconSound  = document.getElementById('icon-sound');
+  const iconMute   = document.getElementById('icon-mute');
+
+  musicBtn.addEventListener('click', () => {
+    if (!ytPlayer) return;
+    isMuted = !isMuted;
+    if (isMuted) {
+      ytPlayer.mute();
+      iconSound.style.display = 'none';
+      iconMute.style.display = 'block';
+    } else {
+      ytPlayer.unMute();
+      ytPlayer.setVolume(MUSIC_VOLUME);
+      iconSound.style.display = 'block';
+      iconMute.style.display = 'none';
+    }
+  });
 });
 
 
 /* ═══════════════════════════════════════════════
    HELPERS
    ═══════════════════════════════════════════════ */
+
+/* Start music with a gentle volume fade-in */
+function startMusic() {
+  if (!ytReady || !ytPlayer) return;
+
+  try {
+    ytPlayer.setVolume(5);
+    ytPlayer.playVideo();
+
+    // Fade volume up gently over ~2 seconds
+    let vol = 5;
+    const fadeIn = setInterval(() => {
+      vol += 2;
+      if (vol >= MUSIC_VOLUME) {
+        vol = MUSIC_VOLUME;
+        clearInterval(fadeIn);
+      }
+      try { ytPlayer.setVolume(vol); } catch (e) { clearInterval(fadeIn); }
+    }, 150);
+
+    // Show mute toggle
+    const btn = document.getElementById('music-toggle');
+    if (btn) {
+      btn.style.display = 'flex';
+      setTimeout(() => btn.classList.add('show'), 100);
+    }
+  } catch (e) {
+    // YouTube blocked or unavailable — fail silently
+    console.log('Music unavailable:', e.message);
+  }
+}
 
 function setLetterDate() {
   const el = document.getElementById('letter-date');
