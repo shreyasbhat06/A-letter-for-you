@@ -688,7 +688,6 @@ body {
   transform: translate(-50%, -50%) scale(0.35);
   opacity: 0;
   pointer-events: none;
-  /* Slightly faster close */
   transition:
     transform 1.5s cubic-bezier(0.55, 0, 1, 0.45),
     opacity   1.2s cubic-bezier(0.55, 0, 1, 0.45);
@@ -1008,22 +1007,51 @@ body {
   .fg-bl { bottom: 3%; left: 1%; }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 480px), (max-height: 800px) {
   .envelope { width: 265px; height: 175px; }
   .envelope-flap { height: 88px; }
-  .wax-seal { width: 50px; height: 50px; bottom: -16px; }
+  .wax-seal { width: 44px; height: 44px; bottom: -12px; }
 
-  .letter-paper { padding: 3rem 1.6rem 4rem; }
-  .letter-body { font-size: 1.1rem; }
+  /* Fit entire letter on single screen */
+  .letter-paper {
+    padding: 1.5rem 1.4rem 2rem;
+    width: min(350px, 94vw);
+  }
+  .letter-date { margin-bottom: 0.8rem; font-size: 0.75rem; }
+  .letter-greeting { font-size: 1.4rem; margin-bottom: 0.2rem; }
+  .letter-body { font-size: 1rem; line-height: 1.6; }
+  .letter-body p { margin-bottom: 0.8rem; text-indent: 1.2rem; }
+  .letter-closing { font-size: 1.2rem; margin-top: 0.8rem; margin-bottom: 0; }
+  .letter-signature { font-size: 1.6rem; }
+
+  .divider { margin: 0 auto 0.8rem; height: 8px; }
+  .wave-border { display: none; }
   .fold-crease { display: none; }
+  .ruled-lines .rl { opacity: 0.5; }
+
+  .pressed-flower-letter {
+    bottom: -5px; right: 10px;
+    transform: scale(0.65) rotate(-15deg) translateY(12px);
+  }
+  .pressed-flower-letter.reveal {
+    transform: scale(0.65) rotate(-15deg) translateY(0);
+  }
+  .fold-btn { bottom: 0.5rem; right: 0.5rem; width: 28px; height: 28px; }
+  .fold-btn svg { width: 14px; height: 14px; }
 
   /* Keep flowers but smaller */
-  .sunflower { transform: scale(0.5) !important; }
-  .fg-tl { top: 1%; left: 0%; }
-  .fg-tr { top: 1%; right: 0%; }
-  .fg-br { bottom: 1%; right: 0%; }
-  .fg-bl { bottom: 2%; left: 0%; }
+  .sunflower { transform: scale(0.4) !important; }
+  .fg-tl { top: 0%; left: -2%; }
+  .fg-tr { top: 0%; right: -2%; }
+  .fg-br { bottom: 0%; right: -2%; }
+  .fg-bl { bottom: 0%; left: -2%; }
   .loose-petal { display: none; }
+}
+
+@media (max-height: 680px) {
+  .letter-body { font-size: 0.95rem; line-height: 1.5; }
+  .letter-body p { margin-bottom: 0.6rem; }
+  .letter-date { margin-bottom: 0.4rem; }
 }
 
 /* ─── Music Toggle ─── */
