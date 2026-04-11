@@ -702,10 +702,10 @@ body {
 .letter-paper {
   position: relative;
   width: min(660px, 88vw);
-  min-height: 780px;
+  min-height: auto;
   background: linear-gradient(180deg,
     var(--parchment-light) 0%, var(--parchment) 8%, var(--parchment) 85%, var(--parchment-dark) 100%);
-  padding: 3.5rem 4rem 4.5rem;
+  padding: 4.5rem 4rem 5.5rem;
   border-radius: 2px;
   box-shadow:
     0 4px 8px rgba(0,0,0,0.15),
@@ -988,7 +988,7 @@ body {
   .label-to { font-size: 1.8rem; }
 
   .letter-paper {
-    padding: 2.5rem 1.8rem 3.5rem;
+    padding: 3.5rem 2rem 4.5rem;
     min-height: auto;
   }
 
@@ -1013,7 +1013,7 @@ body {
   .envelope-flap { height: 88px; }
   .wax-seal { width: 50px; height: 50px; bottom: -16px; }
 
-  .letter-paper { padding: 2rem 1.4rem 3rem; }
+  .letter-paper { padding: 3rem 1.6rem 4rem; }
   .letter-body { font-size: 1.1rem; }
   .fold-crease { display: none; }
 
