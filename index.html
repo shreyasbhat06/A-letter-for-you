@@ -24,39 +24,92 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Everything is ONE continuous scene -->
   <div class="scene" id="scene">
 
-    <!-- Wooden desk background -->
+    <!-- Wooden desk -->
     <div class="desk-bg">
       <div class="wood-grain"></div>
+      <div class="desk-light"></div>
       <div class="desk-vignette"></div>
-      <div class="desk-warm-light"></div>
     </div>
 
-    <!-- Scattered background papers for depth -->
-    <div class="bg-papers">
-      <div class="bg-paper p1">
-        <div class="bg-paper-lines"></div>
+    <!-- Decorative flowers -->
+    <div class="flowers">
+      <!-- Sunflower top-left -->
+      <div class="flower-group fg-tl">
+        <div class="sunflower sf-1">
+          <div class="sf-petals">
+            <div class="sf-petal"></div><div class="sf-petal"></div><div class="sf-petal"></div>
+            <div class="sf-petal"></div><div class="sf-petal"></div><div class="sf-petal"></div>
+            <div class="sf-petal"></div><div class="sf-petal"></div><div class="sf-petal"></div>
+            <div class="sf-petal"></div><div class="sf-petal"></div><div class="sf-petal"></div>
+          </div>
+          <div class="sf-center"></div>
+          <div class="sf-stem"></div>
+        </div>
+        <div class="leaf-deco ld-1"></div>
+        <div class="leaf-deco ld-2"></div>
       </div>
-      <div class="bg-paper p2">
-        <div class="bg-paper-lines"></div>
+
+      <!-- Rose cluster top-right -->
+      <div class="flower-group fg-tr">
+        <div class="rose r-1">
+          <div class="rose-outer"></div>
+          <div class="rose-mid"></div>
+          <div class="rose-inner"></div>
+          <div class="rose-core"></div>
+        </div>
+        <div class="rose r-2">
+          <div class="rose-outer"></div>
+          <div class="rose-mid"></div>
+          <div class="rose-inner"></div>
+          <div class="rose-core"></div>
+        </div>
+        <div class="leaf-deco ld-3"></div>
+        <div class="leaf-deco ld-4"></div>
+        <div class="small-bud sb-1"></div>
       </div>
-      <div class="bg-paper p3"></div>
-      <div class="bg-paper p4">
-        <div class="bg-paper-lines"></div>
+
+      <!-- Sunflower bottom-right -->
+      <div class="flower-group fg-br">
+        <div class="sunflower sf-2">
+          <div class="sf-petals">
+            <div class="sf-petal"></div><div class="sf-petal"></div><div class="sf-petal"></div>
+            <div class="sf-petal"></div><div class="sf-petal"></div><div class="sf-petal"></div>
+            <div class="sf-petal"></div><div class="sf-petal"></div><div class="sf-petal"></div>
+            <div class="sf-petal"></div><div class="sf-petal"></div><div class="sf-petal"></div>
+          </div>
+          <div class="sf-center"></div>
+          <div class="sf-stem"></div>
+        </div>
+        <div class="leaf-deco ld-5"></div>
+        <div class="small-bud sb-2"></div>
       </div>
-      <div class="bg-paper p5"></div>
+
+      <!-- Small wildflowers bottom-left -->
+      <div class="flower-group fg-bl">
+        <div class="wildflower wf-1">
+          <div class="wf-petal"></div><div class="wf-petal"></div><div class="wf-petal"></div>
+          <div class="wf-petal"></div><div class="wf-petal"></div>
+          <div class="wf-center"></div>
+        </div>
+        <div class="wildflower wf-2">
+          <div class="wf-petal"></div><div class="wf-petal"></div><div class="wf-petal"></div>
+          <div class="wf-petal"></div><div class="wf-petal"></div>
+          <div class="wf-center"></div>
+        </div>
+        <div class="leaf-deco ld-6"></div>
+        <div class="leaf-deco ld-7"></div>
+      </div>
+
+      <!-- Extra scattered petals -->
+      <div class="loose-petal lp-1"></div>
+      <div class="loose-petal lp-2"></div>
+      <div class="loose-petal lp-3"></div>
     </div>
 
-    <!-- Floating dust / light particles -->
+    <!-- Particles -->
     <div class="particles" id="particles"></div>
-
-    <!-- Warm ambient glow -->
-    <div class="ambient">
-      <div class="glow g1"></div>
-      <div class="glow g2"></div>
-    </div>
 
     <!-- ─── ENVELOPE ─── -->
     <div class="envelope-container" id="envelope-container">
@@ -65,86 +118,68 @@
         <div class="envelope-front">
           <div class="envelope-label">
             <span class="label-to">To You</span>
-            <span class="label-divider">~</span>
-            <span class="label-from">With Love</span>
+            <span class="label-sub">With Love</span>
           </div>
         </div>
         <div class="envelope-flap" id="envelope-flap"></div>
-
-        <!-- Wax seal -->
         <div class="wax-seal" id="wax-seal">
           <div class="seal-inner">✦</div>
         </div>
         <div class="seal-fragments" id="seal-fragments"></div>
       </div>
-
       <p class="envelope-hint" id="envelope-hint">Click the seal to open</p>
     </div>
 
-    <!-- ─── LETTER (starts hidden inside envelope, rises out) ─── -->
+    <!-- ─── LETTER ─── -->
     <div class="letter-wrapper" id="letter-wrapper">
       <div class="letter-paper" id="letter-paper">
         <div class="paper-texture"></div>
         <div class="paper-aging"></div>
         <div class="fold-crease"></div>
 
-        <!-- Flourishes -->
         <div class="flourish tl">❦</div>
         <div class="flourish tr">❦</div>
         <div class="flourish bl">❦</div>
         <div class="flourish br">❦</div>
 
-        <!-- Ruled lines -->
         <div class="ruled-lines" id="ruled-lines"></div>
 
-        <!-- Wave border top -->
         <div class="wave-border top">
           <svg viewBox="0 0 400 16" preserveAspectRatio="none"><path d="M0,8 C40,2 80,14 120,8 C160,2 200,14 240,8 C280,2 320,14 360,8 L400,8" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.25"/></svg>
         </div>
 
-        <!-- Content -->
         <div class="letter-content" id="letter-content">
           <p class="letter-date" id="letter-date"></p>
           <p class="letter-greeting">My Dearest,</p>
-
           <div class="divider">
-            <svg viewBox="0 0 200 10" preserveAspectRatio="xMidYMid meet"><path d="M0,5 Q50,0 100,5 T200,5" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.2"/><circle cx="100" cy="5" r="1.5" fill="currentColor" opacity="0.15"/></svg>
+            <svg viewBox="0 0 200 10"><path d="M0,5 Q50,0 100,5 T200,5" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.2"/><circle cx="100" cy="5" r="1.5" fill="currentColor" opacity="0.15"/></svg>
           </div>
-
           <div class="letter-body" id="letter-body">
             <p>These words have waited a long time to find their way to you. I sat by the window this evening, the amber light falling across the old wooden desk, and I thought of you — as I always do when the world grows quiet.</p>
             <p>There are things too tender for speaking aloud, so I have pressed them gently into ink and paper, hoping they reach you the way a song carries across still water.</p>
             <p>Please know that wherever you are, whatever season you find yourself in, you are thought of — deeply, warmly, and always.</p>
           </div>
-
           <p class="letter-closing">Forever yours,</p>
           <p class="letter-signature">♥</p>
 
-          <!-- Pressed flower -->
-          <div class="pressed-flower">
-            <div class="flower-stem"></div>
-            <div class="petal-ring">
-              <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
+          <div class="pressed-flower-letter">
+            <div class="pfl-stem"></div>
+            <div class="pfl-petals">
+              <div class="pfl-p"></div><div class="pfl-p"></div><div class="pfl-p"></div>
+              <div class="pfl-p"></div><div class="pfl-p"></div>
             </div>
-            <div class="flower-center"></div>
-            <div class="leaf l1"></div>
-            <div class="leaf l2"></div>
+            <div class="pfl-center"></div>
+            <div class="pfl-leaf l1"></div>
+            <div class="pfl-leaf l2"></div>
           </div>
         </div>
 
-        <!-- Ink blots -->
-        <div class="ink-blot b1"></div>
-        <div class="ink-blot b2"></div>
-
-        <!-- Coffee stain -->
         <div class="coffee-ring"></div>
 
-        <!-- Wave border bottom -->
         <div class="wave-border bot">
           <svg viewBox="0 0 400 16" preserveAspectRatio="none"><path d="M0,8 C40,2 80,14 120,8 C160,2 200,14 240,8 C280,2 320,14 360,8 L400,8" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.25"/></svg>
         </div>
 
-        <!-- Fold button -->
         <button class="fold-btn" id="fold-btn" title="Fold the letter">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 8l9 6 9-6"/><path d="M21 8v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8"/><path d="M3 8l9-5 9 5"/>
@@ -152,7 +187,6 @@
         </button>
       </div>
     </div>
-
   </div>
 
   <script src="script.js"></script>
